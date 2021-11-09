@@ -26,14 +26,24 @@ On the other hand, the overall hash rate of a cryptocurrency network is an indic
 
 # Processing
 
-> Split dataset size 0.33
+> Split dataset size 0.2
 ```python
+train['difficulty'] = train['difficulty'] / 10000000000
+# 10,000,000,000 divid
+  
+columns = ['miners-revenue', 'trade-volume',
+        'n-unique-addresses']
+        
+x_train = train.iloc[:,:-1]
+y_train = train.iloc[:,-1]
+
+
 from sklearn.model_selection import train_test_split
-train, test, y_train, y_test = train_test_split(
-                x_train, y_train,
-                test_size=0.33, 
-                random_state=42
-               )
+train, test, y_train, y_test = train_test_split(x_train, y_train, test_size=0.2, random_state=42)
+
+train = pd.concat([train,y_train],axis=1)
+y_test = y_test/1000000
+train['hash-rate'] = train['hash-rate']/1000000
 ```
 
 > difficulty scale processing
