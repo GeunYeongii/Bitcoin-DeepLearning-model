@@ -51,34 +51,100 @@ for i in columns:
 
 # Model
 ```python
-linear1 = nn.Linear(7,64,bias=True) # train Feature => 7
-linear2 = nn.Linear(64,128,bias=True)  
-linear3 = nn.Linear(128,128,bias=True)  
-linear4 = nn.Linear(128,64,bias=True)  
-linear5 = nn.Linear(64,1,bias=True)  
-relu = nn.ReLU() # use ReLU
-dropout = nn.Dropout(p=0.3)
-
-#torch.nn.init.xavier_normal_(linear1.weight)
-
-model = nn.Sequential(linear1,relu,dropout,
-                      linear2,relu,dropout,
-                      linear3,relu,dropout,
-                      linear4,relu,dropout,
-                      linear5)
-
-optimizer = optim.Adam(model.parameters(), lr=0.1)
-loss = nn.MSELoss()
-
-for epoch in range(101) :
-    hypothesis = model(x_train)  # set hypothesis
-    cost = loss(hypothesis,y_train)
-    
-    optimizer.zero_grad() # reset parameters
-    cost.backward()  # back propagation cost value
-    optimizer.step() #optimizer update
-    
-    if epoch%100==0:  # print cost per epoch 100
-        print("Epoch : ",epoch,"cost : ",cost.item())
+class NN(torch.nn.Module):
+    def __init__(self):
+        super(NN,self).__init__()
         
+        self.linear1 = nn.Linear(6,512,bias=True)
+        self.linear2 = nn.Linear(512,256,bias=True)
+        self.linear3 = nn.Linear(256,128,bias=True)
+        self.linear4 = nn.Linear(128,64,bias=True)
+        self.linear5 = nn.Linear(64,32,bias=True)
+        self.linear6 = nn.Linear(32,1,bias=True)
+        self.relu = nn.ReLU()
+        #self.dropout = nn.Dropout(p=0.1)
+        #init
+        
+        torch.nn.init.orthogonal_(self.linear1.weight)
+        torch.nn.init.orthogonal_(self.linear2.weight)
+        torch.nn.init.orthogonal_(self.linear3.weight)
+        torch.nn.init.orthogonal_(self.linear4.weight)
+        torch.nn.init.orthogonal_(self.linear5.weight)
+        torch.nn.init.orthogonal_(self.linear6.weight)
+        
+    def forward(self,x):
+        out = self.linear1(x)
+        out = self.relu(out)
+        #out = self.dropout(out)
+        out = self.linear2(out)
+        out = self.relu(out)
+        #out = self.dropout(out)
+        out = self.linear3(out)
+        out = self.relu(out)
+        #out = self.dropout(out)
+        out = self.linear4(out)
+        out = self.relu(out)
+        #out = self.dropout(out)
+        out = self.linear5(out)
+        out = self.relu(out)
+        #out = self.dropout(out)
+        out = self.linear6(out)
+        return out
+
+model = NN().to(device)
+optimizer = optim.Adam(model.parameters(), lr=2e-4)
+loss = nn.MSELoss().to(device)
+model
 ```
+>NN->(  
+>  (linear1): Linear(in_features=6, out_features=512, bias=True)  
+>  (linear2): Linear(in_features=512, out_features=256, bias=True)  
+>  (linear3): Linear(in_features=256, out_features=128, bias=True)  
+>  (linear4): Linear(in_features=128, out_features=64, bias=True)  
+>  (linear5): Linear(in_features=64, out_features=32, bias=True)  
+>  (linear6): Linear(in_features=32, out_features=1, bias=True)  
+>  (relu): ReLU()  
+>)  
+
+
+# Train
+```python
+plt_los = []
+train_total_batch = len(x_train)
+for epoch in range(10001) : 
+    avg_cost = 0
+    model.train()
+
+    hypothesis = model(x_train) 
+    cost = loss(hypothesis,y_train) 
+    
+    optimizer.zero_grad() 
+    cost.backward()
+    optimizer.step() 
+    avg_cost += cost / train_total_batch
+    plt_los.append([cost])
+    if epoch%100==0:  
+        print("Epoch : ",epoch,"cost : ",cost.item())
+```
+
+# Loss
+```python
+import matplotlib.pyplot as plt
+
+def plot(loss_list: list, ylim=None, title=None) -> None:
+    bn = [i[0] for i in loss_list]
+
+    plt.figure(figsize=(7, 7))
+    plt.plot(bn, label='train')
+    if ylim:
+        plt.ylim(ylim)
+
+    if title:
+        plt.title(title)
+    plt.legend()
+    plt.grid('on')
+    plt.show()
+ 
+plot(plt_los , [30.0, 100.0], title='Loss at Epoch')
+```
+![Screenshot 2021-11-09 200657](https://user-images.githubusercontent.com/82564045/140913381-682d9dfc-4070-4355-aebd-259f1a0ba9b1.gif)
