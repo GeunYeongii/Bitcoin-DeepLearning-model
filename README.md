@@ -1,12 +1,3 @@
-# Hash Power / Hash Rate
-What Is Hash Power/Hash Rate?
-Hash power, or hash rate, are interchangeable terms used to describe the combined computational power of a specific cryptocurrency network or the power of an individual mining rig on that network.  
-The operation of any mineable cryptocurrency — for example, Bitcoin (BTC) — is maintained by its own network of miners: individuals and organizations that contribute the computational power of their mining rigs to process transactions and emit new coins.  They do this via calculating cryptographic hashes — pseudorandom data strings that are used to prevent double spending and to ensure that new coins can’t be created out of thin air.  
->The hash rate of a mining rig is the number of hashes that it can calculate per second. The combined hash power of a cryptocurrency network is the sum of the hash rates of all mining rigs that are in operation at any given moment.
-
-Different devices, such as CPUs, GPUs and ASICs have differing hash rates, depending on their sheer computational power, as well as how well-optimized they are for the specific task of processing a given hash function.
-The hash rate of an individual device is a key metric for measuring the profitability of a mining setup as it determines the likelihood of finding a “good” hash that will produce a mining reward. 
-On the other hand, the overall hash rate of a cryptocurrency network is an indicator of that coin’s security: in order to hack the network for personal gain, the attackers need to overcome its total hash power — making the task nearly impossible at high enough hash rates.
 
 # DataSets - [BlockChain_BitCoin](https://www.blockchain.com/charts)
 - payaments-per-block
